@@ -4,20 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.formacionbdi.microservicios.commons.alumnos.models.entity.Alumno;
 import com.formacionbdi.microservicios.commons.examenes.models.entity.Examen;
 
@@ -35,8 +25,13 @@ public class Curso {
 	@Column(name="create_at")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createAt;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties(value = {"cursoAlumnos"}, allowSetters = true)
+	private List<CursoAlumno> cursoAlumnos;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	//@OneToMany(fetch = FetchType.LAZY) Versión con alumnos en la misma ddbb
+	@Transient
 	private List<Alumno> alumnos;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -50,6 +45,7 @@ public class Curso {
 	public Curso() {
 		this.alumnos = new ArrayList<>();
 		this.examenes = new ArrayList<>();
+		this.cursoAlumnos = new ArrayList<>();
 	}
 
 	public Long getId() {
@@ -106,5 +102,36 @@ public class Curso {
 	
 	public void removeExamen(Examen examen) {
 		this.examenes.remove(examen);
+	}
+
+	public List<CursoAlumno> getCursoAlumnos() {
+		return cursoAlumnos;
+	}
+
+	public void setCursoAlumnos(List<CursoAlumno> cursoAlumnos) {
+		this.cursoAlumnos = cursoAlumnos;
+	}
+
+	public void addCursoAlumnos(CursoAlumno cursoAlumno) {
+		this.cursoAlumnos.add(cursoAlumno);
+	}
+
+	public void removeCursoAlumnos(CursoAlumno cursoAlumno) {
+		this.cursoAlumnos.remove(cursoAlumno);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) {
+			return true;
+		}
+
+		if(!(obj instanceof Curso)) {
+			return false;
+		}
+
+		Curso a = (Curso) obj;
+
+		return this.id != null && this.id.equals(a.getId());
 	}
 }
