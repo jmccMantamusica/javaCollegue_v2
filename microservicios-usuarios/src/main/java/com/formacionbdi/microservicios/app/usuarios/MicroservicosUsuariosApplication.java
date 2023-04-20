@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+@EnableFeignClients
 @EnableEurekaClient
 @SpringBootApplication
 @EntityScan({"com.formacionbdi.microservicios.commons.alumnos.models.entity"})
-@EnableFeignClients
 public class MicroservicosUsuariosApplication {
 
 	public static void main(String[] args) {

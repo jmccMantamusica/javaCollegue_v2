@@ -1,5 +1,8 @@
 package com.formacionbdi.microservicios.app.respuestas.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.formacionbdi.microservicios.app.respuestas.models.entity.Respuesta;
 import com.formacionbdi.microservicios.app.respuestas.services.RespuestaService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 public class RespuestaController {
 
@@ -23,8 +23,9 @@ public class RespuestaController {
 	
 	@PostMapping
 	public ResponseEntity<?> crear(@RequestBody Iterable<Respuesta> respuestas){
-		respuestas = ((List<Respuesta>) respuestas).stream().map(r -> {
+		respuestas = ((List<Respuesta>)respuestas).stream().map(r -> {
 			r.setAlumnoId(r.getAlumno().getId());
+			r.setPreguntaId(r.getPregunta().getId());
 			return r;
 		}).collect(Collectors.toList());
 		Iterable<Respuesta> respuestasDb = service.saveAll(respuestas);

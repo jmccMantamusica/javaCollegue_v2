@@ -1,61 +1,72 @@
 package com.formacionbdi.microservicios.app.cursos.models.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="cursos_alumnos")
 public class CursoAlumno {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column(name="alumno_id", unique = true)
+	private Long alumnoId;
+	
+	@JsonIgnoreProperties(value= {"cursoAlumnos"})
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="curso_id")
+	private Curso curso;
 
-    @Column(name = "alumno_id", unique = true)
-    private Long alumnoId;
+	public Long getId() {
+		return id;
+	}
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "curso_id")
-    @JsonIgnoreProperties(value = {"cursoAlumnos"})
-    private Curso curso;
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getAlumnoId() {
+		return alumnoId;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setAlumnoId(Long alumnoId) {
+		this.alumnoId = alumnoId;
+	}
 
-    public Long getAlumnoId() {
-        return alumnoId;
-    }
+	public Curso getCurso() {
+		return curso;
+	}
 
-    public void setAlumnoId(Long alumnoId) {
-        this.alumnoId = alumnoId;
-    }
+	public void setCurso(Curso curso) {
+		this.curso = curso;
+	}
 
-    public Curso getCurso() {
-        return curso;
-    }
+	@Override
+	public boolean equals(Object obj) {
 
-    public void setCurso(Curso curso) {
-        this.curso = curso;
-    }
+		if(this == obj) {
+			return true;
+		}
+		
+		if(!(obj instanceof CursoAlumno)) {
+			return false;
+		}
 
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) {
-            return true;
-        }
-
-        if(!(obj instanceof CursoAlumno)) {
-            return false;
-        }
-
-        CursoAlumno a = (CursoAlumno) obj;
-
-        return this.alumnoId != null && this.alumnoId.equals(a.getAlumnoId());
-    }
+		CursoAlumno a = (CursoAlumno) obj;
+		
+		return this.alumnoId != null && this.alumnoId.equals(a.getAlumnoId());
+	}
+	
+	
 }
